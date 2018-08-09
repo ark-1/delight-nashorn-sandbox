@@ -75,6 +75,8 @@ public class NashornSandboxImpl implements NashornSandbox {
 
 	protected SecuredJsCache suppliedCache;
 
+	private boolean injectInterruptionCalls = true;
+
 	public NashornSandboxImpl() {
 		this(new String[0]);
 	}
@@ -212,9 +214,9 @@ public class NashornSandboxImpl implements NashornSandbox {
 	JsSanitizer getSanitizer() {
 		if (sanitizer == null) {
 			if (suppliedCache == null) {
-				sanitizer = new JsSanitizer(scriptEngine, maxPreparedStatements, allowNoBraces);
+				sanitizer = new JsSanitizer(scriptEngine, maxPreparedStatements, allowNoBraces, injectInterruptionCalls);
 			} else {
-				sanitizer = new JsSanitizer(scriptEngine, allowNoBraces, suppliedCache);
+				sanitizer = new JsSanitizer(scriptEngine, allowNoBraces, suppliedCache, injectInterruptionCalls);
 			}
 		}
 		return sanitizer;
@@ -311,6 +313,14 @@ public class NashornSandboxImpl implements NashornSandbox {
 			sanitizer = null;
 		}
 		allowNoBraces = v;
+	}
+
+	@Override
+	public void injectInterruptionCalls(boolean v) {
+		if (injectInterruptionCalls != v) {
+			sanitizer = null;
+		}
+		injectInterruptionCalls = v;
 	}
 
 	@Override

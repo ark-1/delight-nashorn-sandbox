@@ -32,7 +32,7 @@ public class JsSanitizerTest {
   @Before
   public void setUp()
   {
-    jsSanitizer = new JsSanitizer(scriptEngine, 0, false);
+    jsSanitizer = new JsSanitizer(scriptEngine, 0, false, true);
   }
     
   @Test

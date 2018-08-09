@@ -4,7 +4,7 @@
 
 	<groupId>org.javadelight</groupId>
 	<artifactId>delight-nashorn-sandbox</artifactId>
-	<version>0.1.16-SNAPSHOT</version>
+	<version>0.1.16-SNAPSHOT-jb</version>
 	<description>A safe sandbox to execute JavaScript code from Nashorn.</description>
 	<url>https://github.com/javadelight/delight-nashorn-sandbox</url>
 
@@ -303,12 +303,11 @@
 
 	<distributionManagement>
 		<repository>
-			<id>bintray-javadelight-javadelight</id>
-			<name>javadelight-javadelight</name>
-			<url>https://api.bintray.com/maven/javadelight/javadelight/delight-nashorn-sandbox/;publish=1</url>
+			<id>bintray-ark1-delight-nashorn-sandbox</id>
+			<name>ark1-delight-nashorn-sandbox</name>
+			<url>https://api.bintray.com/maven/ark1/delight-nashorn-sandbox/delight-nashorn-sandbox/;publish=1</url>
 		</repository>
 	</distributionManagement>
-
 
 	<developers>
 		<developer>

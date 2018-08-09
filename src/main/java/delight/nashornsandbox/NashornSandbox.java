@@ -246,6 +246,8 @@ public interface NashornSandbox {
    *      performed
    */
   void allowNoBraces(boolean v);
+
+  void injectInterruptionCalls(boolean v);
   
   /**
    * The size of prepared statements LRU cache. Default 0 (disabled).

@@ -111,19 +111,23 @@ class JsSanitizer {
 	/** <code>true</code> when lack of braces is allowed. */
 	private final boolean allowNoBraces;
 
-	JsSanitizer(final ScriptEngine scriptEngine, final int maxPreparedStatements, final boolean allowBraces) {
+	private final boolean injectInterruptionCalls;
+
+	JsSanitizer(final ScriptEngine scriptEngine, final int maxPreparedStatements, final boolean allowBraces, final boolean injectInterruptionCalls) {
 		this.scriptEngine = scriptEngine;
 		this.allowNoBraces = allowBraces;
 		this.securedJsCache = createSecuredJsCache(maxPreparedStatements);
-		assertScriptEngine();
+        this.injectInterruptionCalls = injectInterruptionCalls;
+        assertScriptEngine();
 		this.jsBeautify = getBeautifHandler(scriptEngine);
 	}
 
-	JsSanitizer(final ScriptEngine scriptEngine, final boolean allowBraces, SecuredJsCache cache) {
+	JsSanitizer(final ScriptEngine scriptEngine, final boolean allowBraces, SecuredJsCache cache, final boolean injectInterruptionCalls) {
 		this.scriptEngine = scriptEngine;
 		this.allowNoBraces = allowBraces;
 		this.securedJsCache = cache;
-		assertScriptEngine();
+        this.injectInterruptionCalls = injectInterruptionCalls;
+        assertScriptEngine();
 		this.jsBeautify = getBeautifHandler(scriptEngine);
 	}
 
@@ -186,24 +190,24 @@ class JsSanitizer {
 		if (allowNoBraces) {
 			return;
 		}
-		
+
 		for (final Pattern pattern : LACK_EXPECTED_BRACES) {
 			final Matcher matcher = pattern.matcher(RemoveComments.perform(beautifiedJs));
 			if (matcher.find()) {
-				
+
 				String line = "";
 				int index = matcher.start();
 				while (index >= 0 && beautifiedJs.charAt(index) != '\n' ) {
 					line = beautifiedJs.charAt(index)+line;
 					index--;
 				}
-				
+
 				int singleParaCount = line.length() - line.replace("'", "").length();
 				int doubleParaCount = line.length() - line.replace("\"", "").length();
-				
+
 				if (singleParaCount % 2 != 0 || doubleParaCount % 2 != 0) {
 					// for in string
-					
+
 				} else {
 					throw new BracesException("No block braces after function|for|while|do. Found ["+matcher.group()+"]");
 				}
@@ -264,6 +268,9 @@ class JsSanitizer {
 		checkJs(js);
 		final String beautifiedJs = beautifyJs(js);
 		checkBraces(beautifiedJs);
+		if (!injectInterruptionCalls) {
+		    return beautifiedJs;
+        }
 		final String injectedJs = injectInterruptionCalls(beautifiedJs);
 		// if no injection, no need to add preamble
 		if (beautifiedJs.equals(injectedJs)) {
